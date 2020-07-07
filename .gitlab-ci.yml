@@ -1,0 +1,45 @@
+stages: 
+    - test
+    - build-app
+    - build-image
+
+test: 
+    image: node:alpine
+    stage: test
+    script: 
+        - npm set strict-ssl false 
+        - npm install
+        - npm run test
+
+build-app: 
+    image: node:alpine
+    stage: build-app 
+    dependencies: 
+        - test
+    script: 
+        - npm set strict-ssl-false
+        - npm install
+        - npm run build 
+    artifacts: 
+        path:
+            - dist/
+            expire_in: 1 week
+        only:
+            - master
+            - development
+            - web
+            - tags
+
+build-image: 
+    image: node:alpine
+    stage: build-image
+    dependencies: 
+        - build-app
+    script: 
+        - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME .
+        - docker push $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_REF_NAME
+    only: 
+        - master
+        - development
+        - web
+        - tags
