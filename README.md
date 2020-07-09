@@ -1,32 +1,6 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Welcome to Sick Seed Service
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
-[travis-url]: https://travis-ci.org/nestjs/nest
-[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
-[linux-url]: https://travis-ci.org/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
-<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
-<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
-  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**This README will not help you with nestjs, only the conventions of this app. For more information about nestjs, visit http://docs.nestjs.io/**
 
 ## Installation
 
@@ -60,16 +34,67 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+## Recommendataions
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+There's been a lot of work on this seed to be well intergated with VSCode. If you want to have the best development experience, you should download these extentions:
 
-## Stay in touch
+-   ESLint
+-   Prettier
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Because this app was created with nestjs, it will follow nestjs guidelines for files structure.
 
-## License
+### Resources
 
-  Nest is [MIT licensed](LICENSE).
+-   `resourceName.controller.ts` - Makes the first contact with the resource. Will contain the translation from the API to our service.
+-   `resourceName.service.ts` - Will contain all of our logic.
+-   `resourceName.module.ts` - Module are wat combining the services to controllers. It will hold alll the configuration for a route.
+-   `resourceName.dto.ts` - (optional) Will hold any specific types for the resource such as query/params/headers/body.
+
+Resource will be in a folder inside `./src/`, and their modules will be imported to `./src/app.modules.ts`.
+Theres could be more files added to a resource such as specific types for headers/body, those will be added to the file.
+
+### Common
+
+Here we hold anything that is not resource specific. Stuff that ar currently in there:
+
+-   `logging.interceptor.ts` - Intercept every resource that you put it about the class. This is the component that will log the request/response.
+
+This folder can be used for service specific handlers, or stuff used by many services (which in that case you should make MR to this seed).
+
+Feel free to add things that belong tho the template, like middlewares, guards, common types etc.
+
+## How to add new resource?
+
+To create a new resource, you'll need to generate 3 files:
+
+```bash
+$ nest generate module <resourceName>
+$ nest generate controller <resourceName>
+$ nest generate service <resourceName>
+```
+
+Make sure that the new module is referenced on `app.module.ts` as well.
+
+## How do I build?
+
+To build the app, simply run:
+
+```bash
+$ npm run build
+```
+
+This will create `./dist` folder in the project root. Then run
+
+```bash
+$ npm run start:prod
+```
+
+To start local instance of the production server.
+
+In order to build docker image, run
+
+```bash
+$ docker build .
+```
+
+The docker image will export the app on port 80, so its important to make sure that the configuration will have the same port open to expose the app. Only the `./dist` folder will be uploaded to the docker image! make sure that you run `$ npm run build` to create the latest version of the files (and that every config file you added are inside it).

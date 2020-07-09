@@ -12,9 +12,9 @@ module.exports = {
 		jest: true,
 	},
 	rules: {
-		'@typescript-eslint/interface-name-prefix': 'off',
-		'@typescript-eslint/explicit-function-return-type': 'warn',
 		'prettier/prettier': 'error',
+		'@typescript-eslint/interface-name-prefix': 'off',
+		'@typescript-eslint/explicit-function-return-type': 'error',
 		'@typescript-eslint/no-empty-function': 'warn',
 		'@typescript-eslint/unbound-method': 'off',
 		'@typescript-eslint/type-annotation-spacing': 'warn',
