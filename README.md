@@ -1,6 +1,6 @@
 # Welcome to Sick Seed Service
 
-**This README will not help you with nestjs, only the conventions of this app. For more information about nestjs, visit http://docs.nestjs.io/**
+**This README will not help you with nestjs, only the conventions of this app. For more information about nestjs, visit https://docs.nestjs.com/**
 
 ## Installation
 
