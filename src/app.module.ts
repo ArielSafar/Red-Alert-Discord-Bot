@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TerminusModule } from '@nestjs/terminus';
+import { ExampleController } from './example/example.controller';
 import { ExampleModule } from './example/example.module';
+import { ExampleService } from './example/example.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-	imports: [TerminusModule, ExampleModule],
-	controllers: [AppController],
-	providers: [AppService],
+	imports: [TerminusModule, ExampleModule, ConfigModule],
+	controllers: [ExampleController],
+	providers: [ExampleService],
 })
 export class AppModule {}
