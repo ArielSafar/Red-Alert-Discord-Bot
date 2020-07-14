@@ -3,11 +3,11 @@ import { TerminusModule } from '@nestjs/terminus';
 import { ExampleController } from './example/example.controller';
 import { ExampleModule } from './example/example.module';
 import { ExampleService } from './example/example.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule } from '@sick/config';
 
 @Module({
-	imports: [TerminusModule, ExampleModule, ConfigModule],
+	imports: [ConfigModule, TerminusModule, ExampleModule],
 	controllers: [ExampleController],
 	providers: [ExampleService],
 })
-export class AppModule {}
+export class AppModule { }
