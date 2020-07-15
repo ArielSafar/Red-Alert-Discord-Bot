@@ -8,10 +8,12 @@ import { AppModule } from './app.module';
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const config = app.get(Config);
+	const logger = app.get(Logger);
 
 	await config.init(pkg.name);
 
-	app.useLogger(new Logger(config.get<ITransporterOptions[]>('LOGGER.TRANSPORTERS')));
+	logger.init(config.get<ITransporterOptions[]>('LOGGER.TRANSPORTERS'));
+	app.useLogger(logger);
 
 	const swaggerOptions = new DocumentBuilder()
 		.setTitle(pkg.name)
@@ -20,8 +22,8 @@ async function bootstrap() {
 		.build();
 
 	const swaggerDocument = SwaggerModule.createDocument(app, swaggerOptions);
-
 	SwaggerModule.setup('swagger', app, swaggerDocument);
+
 	await app.listen(config.get<number>('PORT'));
 }
 
