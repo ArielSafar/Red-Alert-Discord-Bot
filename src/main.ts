@@ -4,14 +4,20 @@ import { Logger, ITransporterOptions } from '@sick/logger';
 import { Config } from '@sick/config';
 import * as pkg from '../package.json';
 import { AppModule } from './app.module';
+import { AuthenticationService } from '@sick/authentication';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const config = app.get(Config);
+	const logger = app.get(Logger);
+	const authentication = app.get(AuthenticationService);
 
 	await config.init(pkg.name);
 
-	app.useLogger(new Logger(config.get<ITransporterOptions[]>('LOGGER.TRANSPORTERS')));
+	logger.init(config.get<ITransporterOptions[]>('LOGGER.TRANSPORTERS'));
+	app.useLogger(logger);
+
+	authentication.init(config.get<string>('authenticationServiceURL'));
 
 	const swaggerOptions = new DocumentBuilder()
 		.setTitle(pkg.name)
@@ -20,8 +26,8 @@ async function bootstrap() {
 		.build();
 
 	const swaggerDocument = SwaggerModule.createDocument(app, swaggerOptions);
-
 	SwaggerModule.setup('swagger', app, swaggerDocument);
+
 	await app.listen(config.get<number>('PORT'));
 }
 
