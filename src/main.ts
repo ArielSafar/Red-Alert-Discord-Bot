@@ -5,9 +5,13 @@ import { Config } from '@sick/config';
 import * as pkg from '../package.json';
 import { AppModule } from './app.module';
 import { AuthenticationService } from '@sick/authentication';
+import { RequestStorage } from '@sick/request-storage';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
+
+	app.use(RequestStorage.middleware);
+
 	const config = app.get(Config);
 	const logger = app.get(Logger);
 	const authentication = app.get(AuthenticationService);

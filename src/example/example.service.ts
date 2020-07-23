@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Example } from './models/example.model';
 import { Config } from '@sick/config';
 import { Logger } from '@sick/logger';
+import { RequestStorage } from '@sick/request-storage';
 
 @Injectable()
 export class ExampleService {
@@ -25,6 +26,7 @@ export class ExampleService {
 	async getExample(id: number) {
 		const example = this.config.get('example');
 		this.logger.log(`example value in config is: ${example}`);
+		this.logger.log(`this is the request's guid from the RequestStorage: ${RequestStorage.currentRequest().guid}`)
 		if (example) {
 			const foundExample = this.examples.find(example => example.id == id);
 			if (foundExample) {
