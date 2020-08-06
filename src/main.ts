@@ -6,9 +6,12 @@ import * as pkg from '../package.json';
 import { AppModule } from './app.module';
 import { AuthenticationService } from '@sick/authentication';
 import { RequestStorage } from '@sick/request-storage';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
+	
+	app.useGlobalPipes(new ValidationPipe());
 
 	app.use(RequestStorage.middleware);
 
