@@ -4,9 +4,10 @@ import { ExampleModule } from './example/example.module';
 import { ConfigModule } from '@sick/config';
 import { LoggerModule } from '@sick/logger';
 import { AuthenticationModule } from '@sick/authentication';
+import { DatabaseModule } from '@sick/typeorm';
 
 @Module({
-	imports: [ConfigModule, LoggerModule, AuthenticationModule, TerminusModule, ExampleModule],
+	imports: [DatabaseModule, ConfigModule, LoggerModule, AuthenticationModule, TerminusModule, ExampleModule],
 	controllers: [],
 	providers: [],
 })
