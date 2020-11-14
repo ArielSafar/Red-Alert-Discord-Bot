@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
-import { ExampleModule } from './example/example.module';
 import { ConfigModule } from '@sick/config';
 import { LoggerModule } from '@sick/logger';
-import { AuthenticationModule } from '@sick/authentication';
+import { FeedModule } from './feed/feed.module';
 import { DatabaseModule } from '@sick/typeorm';
 
 @Module({
-	imports: [DatabaseModule, ConfigModule, LoggerModule, AuthenticationModule, TerminusModule, ExampleModule],
+	imports: [ConfigModule, LoggerModule, TerminusModule, FeedModule, DatabaseModule],
 	controllers: [],
 	providers: [],
 })

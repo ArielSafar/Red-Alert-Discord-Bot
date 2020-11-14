@@ -34,3 +34,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 .env
 schema.gql
+
+package-lock.json

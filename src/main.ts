@@ -1,46 +1,53 @@
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Logger, ITransporterOptions } from '@sick/logger';
+import { Transport } from '@nestjs/microservices';
 import { Config } from '@sick/config';
+import { ITransporterOptions, Logger } from '@sick/logger';
+import { Database } from '@sick/typeorm';
 import * as pkg from '../package.json';
 import { AppModule } from './app.module';
-import { AuthenticationService } from '@sick/authentication';
-import { RequestStorage } from '@sick/request-storage';
-import { Database } from '@sick/typeorm';
-import { ValidationPipe } from '@nestjs/common';
+
+function getRMQUrls(urls: string[], username: string, password: string, port: number) {
+	return urls.map(host => `amqp://${username}:${password}@${host}:${port}`);
+}
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 
-	app.useGlobalPipes(new ValidationPipe());
-
-	app.use(RequestStorage.middleware);
-
 	const config = app.get(Config);
-	const logger = app.get(Logger);
-	const authentication = app.get(AuthenticationService);
-	const database = app.get(Database);
-
 	await config.init(pkg.name);
 
-	logger.init(config.get<ITransporterOptions[]>('LOGGER.TRANSPORTERS'));
-	app.useLogger(logger);
+	app.get(Logger).init(config.get<ITransporterOptions[]>('LOGGER.TRANSPORTERS'));
 
-	authentication.init(config.get<string>('authenticationServiceURL'));
+	const microservice = app.connectMicroservice({
+		transport: Transport.RMQ,
+		options: {
+			urls: getRMQUrls(
+				config.get<string[]>('RABBITMQ.HOSTS'),
+				config.get<string>('RABBITMQ.USERNAME'),
+				config.get<string>('RABBITMQ.PASSWORD'),
+				config.get<number>('RABBITMQ.PORT', 5672)
+			),
+			queue: config.get<string>('RABBITMQ.FEED.QUEUE'),
+			noAck: false,
+			prefetchCount: config.get<string>('RABBITMQ.FEED.OPTIONS.INTERNAL_QUEUE_SIZE'),
+			queueOptions: {
+				durable: true,
+			},
+		},
+	});
 
-	const swaggerOptions = new DocumentBuilder()
-		.setTitle(pkg.name)
-		.setDescription(pkg.description)
-		.setVersion(pkg.version)
-		.build();
+	await microservice
+		.get(Database)
+		.connect(
+			config.get<string>('MSSQL.HOST'),
+			config.get<string>('MSSQL.USERNAME'),
+			config.get<string>('MSSQL.PASSWORD'),
+			config.get<string>('MSSQL.DATABASE')
+		);
 
-	const swaggerDocument = SwaggerModule.createDocument(app, swaggerOptions);
-	SwaggerModule.setup('swagger', app, swaggerDocument);
-
-	await database.connect(config.get<string>("mssql.host"), config.get<string>("mssql.username"), config.get<string>("mssql.password"), config.get<string>("mssql.name"));
-
-	await app.listen(config.get<number>('PORT'));
-	logger.info(`Application ${pkg.name} is up on ${await app.getUrl()}`);
+	await microservice.listen(() => {
+		console.log('Start listening for events...');
+	});
 }
 
 bootstrap();

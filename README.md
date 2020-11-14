@@ -1,12 +1,49 @@
-# Welcome to Sick Seed Service
+# Welcome to Sick Feed Worker
 
-**This README will not help you with nestjs, only the conventions of this app. For more information about nestjs, visit https://docs.nestjs.com/**
+**This service is subscribed to events from RabbitMQ and insert them to SQL Server.**
+
+## Recommendations
+
+There's been a lot of work on this seed to be well integrated with VSCode. If you want to have the best development experience, you should download these extensions:
+
+-   ESLint
+-   Prettier
+
+Because this app was created with nestjs, it will follow nestjs guidelines for file structure.
 
 ## Installation
 
 ```bash
 $ npm install
 ```
+
+## Configuration
+
+Before starting the app you should set the `.env` file correctly, with the same format as the `.env.example` file.
+
+| Configuration Parameter                     | Type     | Description                                                                     |
+| ------------------------------------------- | -------- | ------------------------------------------------------------------------------- |
+| `RABBITMQ.HOSTS`                            | string[] | The hosts of the RabbitMQ Cluster                                               |
+| `RABBITMQ.USERNAME`                         | string   | Username for the RabbitMQ                                                       |
+| `RABBITMQ.PASSWORD`                         | string   | Password for the RabbitMQ                                                       |
+| `RABBITMQ.PORT`                             | number   | Port of the RabbitMQ (default: `5672`)                                          |
+| `RABBITMQ.FEED.QUEUE`                       | string   | Name of the queue that the worker will read from                                |
+| `RABBITMQ.FEED.OPTIONS.INTERNAL_QUEUE_SIZE` | number   | The maximum number for messages to be processed at once. (min: `1`, max: `200`) |
+| `RABBITMQ.FEED.OPTIONS.FLUSH_INTERVAL`      | number   | Flushing interval to the SQL Server in [ms]                                     |
+| `MSSQL.HOST`                                | string   | Host for SQL Server                                                             |
+| `MSSQL.USERNAME`                            | string   | Username for SQL Server                                                         |
+| `MSSQL.PASSWORD`                            | string   | Password for SQL Server                                                         |
+| `MSSQL.DATABASE`                            | string   | Database name                                                                   |
+| `LOGGER.TRANSPORTERS`                       | string[] | Logger transporters. For more information please look at `@sick/logger`         |
+
+## Before Running the app
+
+Before starting the app you should set the `.env` file correctly, with the same format as the `.env.example` file.
+
+| Environemt Variable | Required | Description                                                                      |
+| ------------------- | -------- | -------------------------------------------------------------------------------- |
+| `NODE_ENV`          | yes      | Tell the config server which environment you want to run (production / test ...) |
+| `CONFIG_SERVER_URL` | yes      | The URL of the config server                                                     |
 
 ## Running the app
 
@@ -33,15 +70,6 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
-
-## Recommendations
-
-There's been a lot of work on this seed to be well integrated with VSCode. If you want to have the best development experience, you should download these extensions:
-
--   ESLint
--   Prettier
-
-Because this app was created with nestjs, it will follow nestjs guidelines for file structure.
 
 ### Resources
 
