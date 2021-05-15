@@ -1,7 +1,7 @@
 {
-	"name": "sick-feed-worker",
+	"name": "red-alert-discord-bot",
 	"version": "1.0.0",
-	"description": "RabbitMQ subscriber for Sick Feed",
+	"description": "Red Alert Discord Bot",
 	"author": "Ariel Safar",
 	"private": true,
 	"license": "UNLICENSED",
